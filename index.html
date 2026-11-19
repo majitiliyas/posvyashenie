@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8fb8ff">
+<meta property="og:title" content="Тропа на Посвящение 🦄">
+<meta property="og:description" content="Горная экспедиция с пони до арены «Жекпе-Жек». 9 станций, квизы и открытка в конце.">
+<meta property="og:type" content="website">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Тропа на Посвящение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Rubik:wght@600;800&family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: a mountain-trail expedition. Fixed layered mountains behind; a trail map on top shows the pony climbing; one "station" card per stop, hosted by a pony from Equestria. Single committed sunset-Equestria look. */
+:root{
+  --sky-top:#8fb8ff; --sky-mid:#ffc3e1; --sky-low:#ffe7b8;
+  --ink:#2b2257; --ink-soft:#5d5291;
+  --magic:#ed438a; --violet:#7b5bd6; --mint:#3fcfa6; --gold:#ffc93c; --sky:#1e98d3;
+  --paper:#fffdf8; --line:#ecdcf7;
+  --display:"Rubik Bubbles","Rubik",system-ui,sans-serif;
+  --head:"Rubik",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  margin:0;font-family:var(--body);color:var(--ink);font-size:16px;
+  background:var(--sky-mid);
+  padding-left:max(12px,env(safe-area-inset-left,0px));
+  padding-right:max(12px,env(safe-area-inset-right,0px));
+  padding-block:10px 28px;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;
+}
+button,a,input{touch-action:manipulation}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 55%,var(--sky-low) 100%)}
+#mountains{position:fixed;left:0;right:0;bottom:0;width:100%;height:34vh;z-index:0;pointer-events:none}
+@media (min-width:700px){#mountains{height:46vh}body{padding-block:20px 40px}}
+#go{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:6;width:100%;min-height:54px}
+@media (max-width:360px){.grid{grid-template-columns:1fr}}
+.slider{-webkit-appearance:none;appearance:none;background:transparent}
+.slider::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#ee4144,#f37033,#fdf6af,#62bc4d,#1e98d3,#672f89)}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;margin-top:-11px;border-radius:50%;background:#fff;border:4px solid var(--magic);box-shadow:0 3px 0 rgba(43,34,87,.25)}
+.slider::-moz-range-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#ee4144,#f37033,#fdf6af,#62bc4d,#1e98d3,#672f89)}
+.slider::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:4px solid var(--magic)}
+.cloud{position:fixed;z-index:0;font-size:46px;opacity:.9;animation:drift linear infinite;pointer-events:none;filter:drop-shadow(0 2px 0 #fff)}
+@keyframes drift{from{transform:translateX(-20vw)}to{transform:translateX(120vw)}}
+.wrap{position:relative;z-index:2;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+
+/* trail map */
+.trail{background:rgba(255,253,248,.82);backdrop-filter:blur(6px);border-radius:20px;padding:8px 10px 4px;border:2px solid #fff}
+.trail svg{width:100%;height:auto;display:block}
+.trail-label{display:flex;justify-content:space-between;font-weight:800;font-size:12px;color:var(--ink-soft);padding:0 4px 4px}
+
+.card{background:var(--paper);border-radius:24px;padding:16px 14px 18px;border:3px solid #fff;
+  box-shadow:0 8px 0 rgba(123,91,214,.25),0 22px 50px rgba(43,34,87,.18);position:relative}
+.scene{display:flex;flex-direction:column;gap:14px;animation:in .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes in{from{transform:translateY(14px) scale(.96);opacity:.3}to{transform:none;opacity:1}}
+
+.host{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:end}
+.host .pony{width:118px}
+.bubble{background:#fff;border:2.5px solid var(--line);border-radius:18px 18px 18px 4px;padding:10px 12px;position:relative;min-width:0}
+.bubble b.name{display:block;font-family:var(--head);font-weight:800;font-size:13px;margin-bottom:2px}
+.bubble p{margin:0;font-weight:700;line-height:1.4;font-size:15px}
+@media (max-width:420px){.host{grid-template-columns:92px 1fr}.host .pony{width:92px}}
+
+h1,h2{margin:0;text-wrap:balance;line-height:1.15}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(32px,9vw,46px);color:var(--magic);
+   text-shadow:3px 3px 0 #fff,5px 5px 0 rgba(123,91,214,.35)}
+h2{font-family:var(--head);font-weight:800;font-size:clamp(20px,5.4vw,25px)}
+p{margin:0;line-height:1.5;font-weight:700;color:var(--ink-soft)}
+.center{text-align:center;align-items:center}
+
+.btn{font-family:var(--head);font-weight:800;font-size:17px;border:0;cursor:pointer;padding:14px 24px;border-radius:16px;
+  color:#fff;background:var(--violet);box-shadow:0 5px 0 #4e36a3;transition:transform .08s,box-shadow .08s;text-decoration:none;display:inline-block;text-align:center}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #4e36a3}
+.btn.pink{background:var(--magic);box-shadow:0 5px 0 #a8215a}
+.btn.tg{background:#2aa3df;box-shadow:0 5px 0 #17739f}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--line);border:2px solid var(--line)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,.peek:focus-visible{outline:3px dashed var(--magic);outline-offset:3px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid.one{grid-template-columns:1fr}
+.opt{font-family:var(--body);font-weight:800;font-size:15px;color:var(--ink);background:#fff;border:2.5px solid var(--line);
+  border-radius:14px;padding:11px 10px;cursor:pointer;text-align:left;line-height:1.3;min-width:0;transition:border-color .15s,background .15s}
+.opt small{display:block;color:var(--ink-soft);font-weight:700;font-size:12.5px;margin-top:2px}
+.opt .emo{font-size:24px;display:block}
+.opt:hover{border-color:#cdb4f2}
+.opt.sel{border-color:var(--violet);background:#f3edff}
+.opt.right{border-color:var(--mint);background:#e9fbf5}
+.opt.wrong{border-color:#ffb3c9;background:#fff2f6}
+.reply{font-weight:800;color:var(--ink);background:#f6f1ff;border-radius:14px;padding:10px 12px;line-height:1.45;font-size:15px}
+.reply:empty{display:none}
+.counter{font-family:var(--head);font-weight:800;font-size:13px;color:var(--violet)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1 1 auto}
+
+.slider{width:100%;accent-color:var(--magic);height:34px}
+.meter{font-family:var(--display);font-size:54px;color:var(--sky);text-align:center;line-height:1;font-variant-numeric:tabular-nums}
+.tinyyay{font-size:10px;padding:4px 8px;border-radius:8px;border:1.5px solid #f3b6cf;background:#fff8fb;color:#c26d92;cursor:pointer;font-family:var(--body);font-weight:800;transition:font-size .3s}
+
+/* hero */
+.hero-ponies{display:flex;justify-content:center;align-items:flex-end;margin:0 -6px;flex-wrap:nowrap}
+.hero-ponies .pony{width:min(19%,96px);margin:0 -6px;animation:hop 1.6s ease-in-out infinite}
+.hero-ponies .pony:nth-child(2n){animation-delay:.25s}
+.hero-ponies .pony:nth-child(3n){animation-delay:.5s}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.tag{display:inline-block;background:var(--gold);color:var(--ink);font-family:var(--head);font-weight:800;font-size:13px;padding:5px 10px;border-radius:999px;transform:rotate(-2deg)}
+
+/* postcard */
+.postcard{border-radius:22px;padding:22px 16px 18px;position:relative;overflow:hidden;color:#fff;text-align:center;
+  background:linear-gradient(170deg,#6f5bd8 0%,#ed438a 60%,#ff9a62 100%);display:flex;flex-direction:column;gap:8px;align-items:center}
+.postcard::after{content:"";position:absolute;left:0;right:0;bottom:0;height:70px;opacity:.45;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 70' preserveAspectRatio='none'%3E%3Cpath d='M0 70 L60 20 L110 50 L170 0 L230 45 L290 15 L350 50 L400 25 L400 70Z' fill='%232b2257'/%3E%3C/svg%3E") bottom/100% 100% no-repeat}
+.postcard > *{position:relative;z-index:1}
+.postcard .time{font-family:var(--display);font-size:clamp(56px,17vw,84px);line-height:1;text-shadow:4px 4px 0 rgba(43,34,87,.4);font-variant-numeric:tabular-nums}
+.postcard .place{font-family:var(--head);font-weight:800;font-size:18px;line-height:1.3}
+.postcard .meta{font-weight:700;font-size:13.5px;line-height:1.5;opacity:.95}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.chip{background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:4px 10px;font-weight:800;font-size:12.5px;color:#fff}
+.chip.dark{background:#fff;border-color:var(--line);color:var(--ink)}
+.msgbox{white-space:pre-line;font-size:13.5px;background:#fff;border:2px dashed var(--line);border-radius:14px;padding:10px 12px;font-weight:700;color:var(--ink-soft);user-select:all}
+
+/* effects */
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:20;width:100%;height:100%}
+.spark{position:fixed;pointer-events:none;z-index:21;font-size:18px;animation:spark .9s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) rotate(200deg) scale(.3);opacity:0}}
+.rainboom{position:fixed;left:50%;top:45%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;pointer-events:none;z-index:19;
+  background:radial-gradient(circle,transparent 52%,#ee4144 53%,#f37033 60%,#fdf6af 67%,#62bc4d 74%,#1e98d3 81%,#672f89 88%,transparent 90%);
+  animation:boom 1.1s ease-out forwards}
+@keyframes boom{from{transform:scale(.2);opacity:1}to{transform:scale(40);opacity:0}}
+.peek{position:fixed;z-index:15;border:0;background:none;padding:0;cursor:pointer;width:76px;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.peek .pony{width:76px}
+.peek .say{position:absolute;bottom:88%;background:#fff;border:2px solid var(--line);border-radius:12px;padding:5px 8px;font-weight:800;font-size:12px;color:var(--ink);white-space:nowrap}
+.fall{position:fixed;top:-40px;z-index:18;font-size:28px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+footer{text-align:center;font-size:12px;font-weight:800;color:var(--ink);opacity:.7}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true"></div>
+<svg id="mountains" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <path d="M0 400 L0 230 L120 150 L210 210 L330 90 L450 200 L560 120 L700 230 L820 70 L950 190 L1060 130 L1200 210 L1200 400Z" fill="#b8a3ef"/>
+  <path d="M330 90 L300 118 L318 112 L333 126 L350 108 L366 116Z M820 70 L788 102 L808 96 L822 110 L840 92 L856 100Z" fill="#fff"/>
+  <path d="M0 400 L0 280 L150 200 L260 260 L400 170 L520 260 L640 190 L780 280 L900 200 L1040 270 L1200 220 L1200 400Z" fill="#8a73d9"/>
+  <path d="M400 170 L376 192 L392 188 L402 200 L416 186 L428 192Z M900 200 L878 220 L894 216 L904 228 L918 214 L930 220Z" fill="#fff" opacity=".9"/>
+  <path d="M0 400 L0 320 L180 270 L330 330 L480 280 L640 340 L800 290 L980 340 L1200 300 L1200 400Z" fill="#5b4bb0"/>
+  <path d="M0 400 L0 360 L240 330 L520 370 L760 340 L1000 372 L1200 350 L1200 400Z" fill="#3a2f80"/>
+</svg>
+
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <div class="trail" aria-label="Карта тропы">
+    <div class="trail-label"><span>Базовый лагерь</span><span id="trailText">0 / 10</span><span>Арена ⛰️</span></div>
+    <svg id="trailMap" viewBox="0 0 520 90"></svg>
+  </div>
+  <main class="card" id="card"></main>
+  <footer>Экспедиция «Посвящение MNU» · Астана · 19.11.2026</footer>
+</div>
+
+<script>
+/* =================== PONIES (fan-art, drawn in SVG) =================== */
+let gid=0;
+function pony(c){
+  const id='g'+(gid++);
+  const m=c.mane, s=c.stroke;
+  const manePath="M152 34 C112 30 98 70 108 112 C114 138 124 154 132 156 C128 128 134 104 142 94 C134 72 142 50 162 44Z";
+  const streaks=m.slice(1).map((col,i)=>`<path d="M${150-i*5} ${42+i*3} C${122-i*4} ${48+i*4} ${112-i*3} ${84+i*4} ${120-i*2} ${128+i*3}" stroke="${col}" stroke-width="${m.length>3?6:9}" fill="none" stroke-linecap="round"/>`).join('');
+  const tail = c.curly
+    ? `<g fill="${m[0]}" stroke="${m[1]||s}" stroke-width="2"><circle cx="62" cy="140" r="16"/><circle cx="50" cy="160" r="15"/><circle cx="56" cy="182" r="14"/><circle cx="44" cy="198" r="11"/></g>`
+    : `<path d="M72 128 C34 118 24 176 46 206 C52 182 58 168 80 152Z" fill="${m[0]}" stroke="${s}" stroke-width="2"/>`+
+      m.slice(1).map((col,i)=>`<path d="M${70-i*3} ${134+i*2} C${46-i*3} ${138+i*4} ${40-i*2} ${170+i*3} ${48-i*1} ${196-i*2}" stroke="${col}" stroke-width="${m.length>3?5:7}" fill="none" stroke-linecap="round"/>`).join('');
+  const mane = c.curly
+    ? `<g fill="${m[0]}" stroke="${m[1]}" stroke-width="2"><circle cx="120" cy="56" r="20"/><circle cx="110" cy="84" r="18"/><circle cx="116" cy="112" r="17"/><circle cx="126" cy="138" r="14"/><circle cx="146" cy="38" r="19"/><circle cx="174" cy="32" r="17"/><circle cx="196" cy="46" r="13"/></g>`
+    : `<path d="${manePath}" fill="${m[0]}" stroke="${s}" stroke-width="2"/>${streaks}
+       <path d="M138 42 C164 20 204 34 200 64 C190 52 176 50 166 62 C164 52 152 48 140 56Z" fill="${m[0]}" stroke="${s}" stroke-width="2"/>
+       ${m[1]?`<path d="M150 40 C170 30 192 40 194 54" stroke="${m[1]}" stroke-width="5" fill="none" stroke-linecap="round"/>`:''}
+       ${c.curl?`<circle cx="118" cy="148" r="9" fill="${m[0]}" stroke="${s}" stroke-width="2"/><circle cx="198" cy="66" r="7" fill="${m[0]}" stroke="${s}" stroke-width="2"/>`:''}`;
+  const wings = c.wings ? `<path d="M96 136 C98 104 132 96 146 110 C136 114 134 120 142 126 C128 128 126 136 132 142 C116 146 104 146 96 136Z" fill="${c.body}" stroke="${s}" stroke-width="2.5"/>` : '';
+  const horn = c.horn ? `<path d="M170 40 L190 2 L182 44Z" fill="${c.body}" stroke="${s}" stroke-width="2.5" stroke-linejoin="round"/><path d="M174 34 L184 30 M178 24 L187 21 M181 15 L188 13" stroke="${s}" stroke-width="2"/>` : '';
+  const hat = c.hat ? `<path d="M112 46 C128 30 186 26 206 40 C196 46 184 46 178 44 C172 22 150 14 132 30 C124 36 118 42 112 46Z" fill="#c58a4a" stroke="#8a5a2b" stroke-width="2.5"/><ellipse cx="160" cy="44" rx="56" ry="10" fill="#c58a4a" stroke="#8a5a2b" stroke-width="2.5"/>` : '';
+  const freckles = c.freckles ? `<g fill="#d98c3b"><circle cx="194" cy="92" r="1.6"/><circle cx="199" cy="96" r="1.6"/><circle cx="190" cy="97" r="1.6"/></g>` : '';
+  return `<svg class="pony" viewBox="0 0 240 230" role="img" aria-label="${c.name}">
+  <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.eye[0]}"/><stop offset="1" stop-color="${c.eye[1]}"/></linearGradient></defs>
+  <ellipse cx="120" cy="214" rx="62" ry="8" fill="rgba(43,34,87,.15)"/>
+  ${tail}
+  <g fill="${c.body}" stroke="${s}" stroke-width="2.5">
+    <rect x="74" y="150" width="17" height="60" rx="8"/><rect x="134" y="150" width="17" height="60" rx="8"/>
+    <ellipse cx="112" cy="148" rx="50" ry="32"/>
+    <rect x="96" y="156" width="17" height="56" rx="8"/><rect x="152" y="150" width="17" height="62" rx="8"/>
+    <path d="M128 140 C132 116 138 100 152 90 L176 112 C164 126 156 140 156 154Z" stroke="none"/>
+    <circle cx="162" cy="80" r="44"/>
+    <ellipse cx="194" cy="100" rx="22" ry="17"/>
+    <path d="M130 54 L122 16 L154 40Z"/>
+  </g>
+  <path d="M132 50 L127 26 L146 42Z" fill="${c.inner||'#ffd6e8'}"/>
+  ${wings}
+  <g transform="translate(90 132) scale(.9)">${c.mark}</g>
+  ${mane}
+  ${horn}${hat}
+  <ellipse cx="178" cy="78" rx="12.5" ry="17.5" fill="#fff" stroke="${s}" stroke-width="1.5"/>
+  <ellipse cx="181" cy="81" rx="9.5" ry="13.5" fill="url(#${id})"/>
+  <ellipse cx="182.5" cy="83" rx="4.6" ry="7.5" fill="#1b1430"/>
+  <circle cx="185.5" cy="74.5" r="3.6" fill="#fff"/><circle cx="178" cy="90" r="1.8" fill="#fff"/>
+  <path d="M165 66 C171 57 186 57 192 66" stroke="#1b1430" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M166 66 l-7 -3 M168 62 l-5 -6" stroke="#1b1430" stroke-width="2.4" stroke-linecap="round"/>
+  <ellipse cx="192" cy="99" rx="7" ry="4" fill="#ff8fb8" opacity=".55"/>${freckles}
+  <circle cx="210" cy="96" r="1.8" fill="${s}"/>
+  <path d="${c.mouth||'M196 108 q8 6 15 -1'}" stroke="${s}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+</svg>`;
+}
+const MARK={
+  star:`<path d="M20 2 L25 15 L39 15 L28 24 L32 38 L20 30 L8 38 L12 24 L1 15 L15 15Z" fill="#ed438a" stroke="#fff" stroke-width="1.5"/><circle cx="38" cy="4" r="3" fill="#fff"/><circle cx="2" cy="4" r="2.5" fill="#fff"/><circle cx="36" cy="34" r="2" fill="#fff"/>`,
+  balloons:`<path d="M10 22 L18 40 M24 20 L20 40 M36 24 L22 40" stroke="#666" stroke-width="1"/><ellipse cx="10" cy="14" rx="8" ry="10" fill="#7fc8f8"/><ellipse cx="25" cy="11" rx="8" ry="10" fill="#fdf06e"/><ellipse cx="37" cy="17" rx="8" ry="10" fill="#7fc8f8"/>`,
+  cloud:`<path d="M6 18 a8 8 0 0 1 10 -8 a10 10 0 0 1 18 2 a7 7 0 0 1 2 13 H8 a6 6 0 0 1 -2 -7Z" fill="#fff" stroke="#9edbf9" stroke-width="1.5"/><path d="M20 24 L14 34 L20 33 L16 44" stroke="#ee4144" stroke-width="3" fill="none"/><path d="M23 24 L17 34 L23 33 L19 44" stroke="#fdf6af" stroke-width="2" fill="none"/><path d="M26 24 L20 34 L26 33 L22 44" stroke="#1e98d3" stroke-width="2" fill="none"/>`,
+  butterflies:`<g fill="#f3b6cf" stroke="#3fcfa6" stroke-width="1"><path d="M10 10 q-8 -8 -8 2 q0 8 8 2 q8 6 8 -2 q0 -10 -8 -2Z"/><path d="M30 6 q-7 -7 -7 2 q0 7 7 2 q7 5 7 -2 q0 -9 -7 -2Z"/><path d="M20 28 q-7 -7 -7 2 q0 7 7 2 q7 5 7 -2 q0 -9 -7 -2Z"/></g>`,
+  diamonds:`<g fill="#6fd6f2" stroke="#2a7fb8" stroke-width="1.2"><path d="M10 6 L18 14 L10 28 L2 14Z"/><path d="M28 2 L36 10 L28 24 L20 10Z"/><path d="M20 20 L28 28 L20 42 L12 28Z"/></g>`,
+  apples:`<g fill="#ee4144"><circle cx="10" cy="14" r="8"/><circle cx="28" cy="10" r="8"/><circle cx="19" cy="28" r="8"/></g><g stroke="#62bc4d" stroke-width="3"><path d="M10 6 l3 -4"/><path d="M28 2 l3 -4"/><path d="M19 20 l3 -4"/></g>`,
+  muffin:`<path d="M6 20 h28 l-4 18 h-20Z" fill="#c58a4a"/><path d="M4 22 a16 14 0 0 1 32 0Z" fill="#9b6bd6"/><circle cx="14" cy="14" r="2" fill="#fff"/><circle cx="24" cy="12" r="2" fill="#fff"/>`
+};
+const P={
+  twilight:{name:'Твайлайт Спаркл',body:'#d7a8ea',stroke:'#9c6fc0',mane:['#263173','#6c3fa0','#ed438a'],eye:['#3b1f6e','#8f63d8'],horn:1,mark:MARK.star,color:'#6c3fa0'},
+  pinkie:{name:'Пинки Пай',body:'#f7b8d3',stroke:'#d978a6',mane:['#ed458b','#b8256a'],curly:1,eye:['#1f5fa8','#82ccf6'],mark:MARK.balloons,mouth:'M194 106 q10 12 20 -2',color:'#d2307a'},
+  dash:{name:'Рэйнбоу Дэш',body:'#9edbf9',stroke:'#5aaed6',mane:['#ee4144','#f37033','#fdf6af','#62bc4d','#1e98d3','#672f89'],wings:1,eye:['#8c1d50','#e25393'],mark:MARK.cloud,mouth:'M196 110 q6 2 14 -4',color:'#1e7fb8'},
+  flutter:{name:'Флаттершай',body:'#fdf3a8',stroke:'#e2c860',mane:['#f3b6cf','#eaa2c2'],wings:1,eye:['#0f6e75','#5ac7c9'],mark:MARK.butterflies,color:'#c26d92'},
+  rarity:{name:'Рарити',body:'#f4f4fa',stroke:'#b9b6d6',mane:['#5e51a3','#7a6cc4'],curl:1,horn:1,eye:['#1f3e8a','#6d8ee0'],mark:MARK.diamonds,inner:'#e6e0ff',color:'#5e51a3'},
+  aj:{name:'Эпплджек',body:'#fbbc6a',stroke:'#d58a33',mane:['#fff39d','#f1dc78'],hat:1,freckles:1,eye:['#2f7a2a','#7bc86a'],mark:MARK.apples,color:'#c06a17'},
+  derpy:{name:'Дёрпи',body:'#c9ccd6',stroke:'#9095a6',mane:['#fbf3a0','#efe08a'],wings:1,eye:['#a88a17','#f2d24a'],mark:MARK.muffin,mouth:'M196 110 q6 6 14 0',color:'#7d7a3a'}
+};
+
+/* =================== STATE =================== */
+const S={time:null,mood:null,volume:100,pack:[],ans:{},score:0,total:0};
+const $card=document.getElementById('card');
+const STATIONS=11; let st=0;
+
+function trail(){
+  const pts=[[18,78],[66,70],[110,76],[156,60],[200,66],[246,48],[292,54],[336,38],[382,42],[428,24],[490,12]];
+  const d='M'+pts.map(p=>p.join(' ')).join(' L');
+  const done=Math.min(st,STATIONS-1), me=pts[done];
+  document.getElementById('trailMap').innerHTML=`
+   <path d="M0 90 L60 60 L120 80 L200 40 L270 70 L350 20 L420 50 L490 0 L520 20 L520 90Z" fill="#e9e1ff"/>
+   <path d="M490 0 L478 14 L486 12 L492 18 L500 10 L507 13Z" fill="#fff"/>
+   <path d="${d}" fill="none" stroke="#cdbcf3" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round"/>
+   <path d="M${pts.slice(0,done+1).map(p=>p.join(' ')).join(' L')}" fill="none" stroke="#ed438a" stroke-width="5" stroke-linecap="round"/>
+   ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i===STATIONS-1?8:5}" fill="${i<=done?'#ed438a':'#fff'}" stroke="#7b5bd6" stroke-width="2"/>`).join('')}
+   <text x="${pts[STATIONS-1][0]-6}" y="${pts[STATIONS-1][1]+5}" font-size="12">🚩</text>
+   <g transform="translate(${me[0]-14} ${me[1]-34})"><text font-size="24">🦄</text></g>`;
+  document.getElementById('trailText').textContent=`${done} / ${STATIONS-1}`;
+}
+function go(n){st=n;trail();stations[n]();window.scrollTo({top:0,behavior:'smooth'});}
+function next(){burst(innerWidth/2,innerHeight*.4,12);go(st+1);}
+const view=html=>{$card.innerHTML=`<section class="scene">${html}</section>`;};
+const host=(p,txt)=>`<div class="host">${pony(P[p])}<div class="bubble"><b class="name" style="color:${P[p].color}">${P[p].name}</b><p>${txt}</p></div></div>`;
+const $=id=>document.getElementById(id);
+
+/* =================== QUIZ ENGINE (never blocks) =================== */
+function quiz(hostKey, intro, qs, done){
+  let i=0;
+  const show=()=>{
+    const q=qs[i];
+    view(`${host(hostKey, i===0?intro:q.say||intro)}
+      <div class="counter">Вопрос ${i+1} из ${qs.length}</div>
+      <h2>${q.q}</h2>
+      <div class="grid ${q.o.some(x=>x.length>24)?'one':''}" id="opts">${q.o.map((o,k)=>`<button class="opt" id="o${k}" data-k="${k}">${o}</button>`).join('')}</div>
+      <div class="reply" id="reply" aria-live="polite"></div>
+      <button class="btn" id="go" disabled>${i<qs.length-1?'Следующий вопрос':'Дальше по тропе'}</button>`);
+    let locked=false;
+    document.querySelectorAll('#opts .opt').forEach(b=>b.onclick=e=>{
+      if(locked) return; locked=true;
+      const k=+b.dataset.k, ok=q.a==null||k===q.a;
+      S.total++; if(ok) S.score++;
+      S.ans[q.id]=b.textContent.trim();
+      b.classList.add(ok?'right':'wrong');
+      if(!ok && q.a!=null) $('o'+q.a).classList.add('right');
+      $('reply').innerHTML=(ok?'✅ ':'🙃 ')+q.r[k]+(q.why?`<br><span style="font-weight:700;color:var(--ink-soft)">${q.why}</span>`:'');
+      $('go').disabled=false; burst(e.clientX,e.clientY,ok?10:5);
+      setTimeout(()=>$('reply').scrollIntoView({block:'center',behavior:RM?'auto':'smooth'}),60);
+      if(q.fx) q.fx(ok);
+    });
+    $('go').onclick=()=>{ i++; i<qs.length?show():done(); };
+  };
+  show();
+}
+
+/* =================== STATIONS =================== */
+const stations=[
+// 0 — base camp
+()=>{ view(`<div class="center scene" style="gap:10px">
+   <span class="tag">Отряд собран · билеты почти в копытах</span>
+   <h1>Тропа на Посвящение</h1>
+   <div class="hero-ponies">${['aj','rarity','twilight','dash','pinkie','flutter'].map(k=>pony(P[k])).join('')}</div>
+   <p>Мы уже идём, это решено. Осталось пройти горную тропу до арены: 9 станций, 6 пони, немного шахмат, немного Тинькова и ни одного способа сойти с маршрута.</p>
+   <button class="btn pink" id="start">Начать восхождение</button>
+   <p style="font-size:13px">Неправильные ответы не мешают идти дальше. Пони не судят. Ну, Рарити немного судит.</p></div>`);
+  $('start').onclick=()=>{party();next();}; },
+
+// 1 — Twilight: meeting time
+()=>{ const T=[['14:00','Раньше всех','Face ID без очереди, лучшие места для фото'],['14:30','К открытию входа','пунктуально, как по чек-листу'],['15:00','Спокойный темп','успеем перекусить и снять сторис'],['15:30','Впритык','бежим, но эффектно']];
+  view(`${host('twilight','Так, я составила чек-лист! Пункт первый: время встречи. Вход на арену с 14:30 до 16:30, начало в 16:30, на входе Face ID.')}
+   <h2>Во сколько встречаемся?</h2>
+   <div class="grid">${T.map(t=>`<button class="opt" data-t="${t[0]}"><span class="emo">⏰</span><b>${t[0]}</b> · ${t[1]}<small>${t[2]}</small></button>`).join('')}</div>
+   <div class="reply" id="reply"></div><button class="btn" id="go" disabled>Записать в чек-лист</button>`);
+  const R={'14:00':'Пунктуальность уровня принцессы Селестии. Ставлю галочку ✔','14:30':'Ровно к открытию. Чек-лист доволен ✔','15:00':'Разумно. Запас времени на пробки учтён ✔','15:30':'Это… рискованно. Но я записала. Дрожащим почерком ✔'};
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=e=>{document.querySelectorAll('[data-t]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.time=b.dataset.t;$('reply').textContent=R[S.time];$('go').disabled=false;burst(e.clientX,e.clientY,8);});
+  $('go').onclick=next; },
+
+// 2 — Pinkie: mood
+()=>{ const M=[['🎉','Вечеринка внутри меня'],['😴','Пони после пар'],['🗻','Горное спокойствие'],['📣','Готова орать'],['🧁','Голодная'],['🌀','Всё сразу']];
+  view(`${host('pinkie','ПРИВЕТ! Я Пинки! У меня есть пушка для вечеринок, и она заряжена! Какое у тебя настроение? Каждый ответ стреляет конфетти, я проверила!')}
+   <h2>Настроение на сегодня</h2>
+   <div class="grid">${M.map((m,i)=>`<button class="opt" data-m="${i}"><span class="emo">${m[0]}</span>${m[1]}</button>`).join('')}</div>
+   <div class="reply" id="reply"></div><button class="btn" id="go" disabled>Дальше</button>`);
+  const R=['Две вечеринки в одном месте! Это законно? Да! 🎉','Ничего, Kairat Nurtas разбудит лучше любого кофе','Как на вершине в безветренный день. Красота 🏔️','Голосовые связки, мы вас любили','Я взяла с собой кексики. Ну, почти все съела, но один остался 🧁','Классика настоящей пони!'];
+  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=e=>{document.querySelectorAll('[data-m]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');const i=+b.dataset.m;S.mood=M[i][0]+' '+M[i][1];$('reply').textContent=R[i];$('go').disabled=false;party(e.clientX,e.clientY);});
+  $('go').onclick=next; },
+
+// 3 — Rainbow Dash: volume 0..120
+()=>{ view(`${host('dash','Громкость на концерте. Минимум — скучно. Максимум — круто. А я бы выкрутила на 20% круче.')}
+   <h2>На сколько процентов ты будешь кричать?</h2>
+   <div class="meter" id="vol">100%</div>
+   <input class="slider" id="volume" type="range" min="0" max="120" value="${S.volume}" aria-label="Громкость">
+   <div class="reply" id="reply"></div>
+   <button class="btn" id="go">Зафиксировать</button>`);
+  let boomed=false;
+  const L=[[0,'Шёпот. Как в библиотеке. Читающая нация одобряет, я нет'],[30,'Подпеваю под нос. Мне скучно уже от описания'],[60,'Нормально. Но можно круче'],[90,'Вот это уже по-нашему!'],[100,'Сто процентов! Почти идеально'],[120,'НА 20% КРУЧЕ! Звуковой радужный удар разрешён 🌈']];
+  const upd=()=>{const v=+$('volume').value;S.volume=v;$('vol').textContent=v+'%';$('reply').textContent=[...L].reverse().find(x=>v>=x[0])[1];
+    if(v===120&&!boomed){boomed=true;rainboom();}};
+  $('volume').oninput=upd; upd(); $('go').onclick=next; },
+
+// 4 — Fluttershy: backpack
+()=>{ const I=[['🔋','Пауэрбанк'],['💧','Вода'],['🍫','Перекус'],['🙂','Лицо для Face ID'],['🎤','Голос'],['🧣','Шарф (ноябрь же)'],['♟️','Карманные шахматы'],['🦋','Хорошее настроение']];
+  view(`${host('flutter','Эм… если тебе не сложно… давай соберём рюкзак? Можно выбрать сколько угодно. Если хочешь. Ой, извини.')}
+   <h2>Что берём с собой?</h2>
+   <div class="grid">${I.map((it,i)=>`<button class="opt" data-p="${i}"><span class="emo">${it[0]}</span>${it[1]}</button>`).join('')}</div>
+   <div class="reply" id="reply"></div>
+   <div class="actions"><button class="btn" id="go">Рюкзак собран</button></div>
+   <p style="text-align:center">Флаттершай хочет что-то сказать: <button class="tinyyay" id="yay">ура</button></p>`);
+  const sel=new Set();
+  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=e=>{const i=+b.dataset.p;sel.has(i)?sel.delete(i):sel.add(i);b.classList.toggle('sel');
+    S.pack=[...sel].map(k=>I[k][0]+' '+I[k][1]);
+    $('reply').textContent=sel.has(6)?'Карманные шахматы! Ты такая умная… ой, я сказала это вслух':sel.size>=6?'Ого, ты подготовилась лучше, чем я к встрече с драконом':'Хорошо… очень хорошо… 🦋';
+    for(let k=0;k<3;k++)setTimeout(()=>drop('🦋'),k*150);});
+  let y=10; $('yay').onclick=()=>{y=Math.min(y+10,46);$('yay').style.fontSize=y+'px';$('yay').textContent=y>=46?'УРА!!!':'ура';};
+  $('go').onclick=next; },
+
+// 5 — Music quiz (DJ host: Pinkie again? -> Twilight researched)
+()=>quiz('twilight','Я провела исследование! Три вопроса о хедлайнерах. Факты проверены по трём источникам.',[
+  {id:'m1',q:'С какой песни Ninety One дебютировали в 2015 году?',o:['«Айыптама»','«Пони-пони»','«Жекпе-Жек»','«Читающая нация»'],a:0,
+   r:['Именно! Сентябрь 2015, с этого и начался Q-pop','Красиво, но это была бы моя песня','Так называется арена, а не песня','Это тема вечера, а не трек'],why:'Дебютный сингл «Айыптама» вышел 1 сентября 2015 года.'},
+  {id:'m2',q:'Как называется фандом Ninety One?',o:['Eaglez','Ponyz','Q-тяшки','Ninetyfans'],a:0,
+   r:['Да! Кстати, само слово «Q-pop» придумали именно они','Если бы… Пони бы зашло','Мило, но нет','Логично, но нет'],why:'Говорят, термин «Q-pop» придумали фанаты Eaglez в 2015 году.'},
+  {id:'m3',q:'Что Kairat Nurtas сделал, кроме песен?',o:['Снял фильм о своей жизни','Выиграл чемпионат мира по шахматам','Покорил Хан-Тенгри','Открыл Маффин-банк'],a:0,
+   r:['Верно! А ещё у него была своя линия одежды','Это был бы сюжетный поворот','Это пока свободно, если что','Это Дёрпи. Скоро познакомишься'],why:'А ещё у него была своя линия одежды.'}
+ ],next),
+
+// 6 — Applejack: MNU
+()=>quiz('aj','Ну, сахарок, тут всё по-честному. Три вопроса про MNU, без подвохов. Почти.',[
+  {id:'u1',q:'Какая тема Посвящения в этом году?',o:['«Читающая нация»','«Спящая нация»','«Нация сторис»','«Опаздывающая нация»'],a:0,
+   r:['Чистая правда, как яблочный сидр','Это неофициальная тема после пар','Это наша тема на вечер','Только не мы. У нас чек-лист Твайлайт'] },
+  {id:'u2',q:'Кто заберёт Кубок Посвящения?',o:['🎭 Высшая Гуманитарная Школа','📰 Международная Школа Журналистики','📈 Международная Школа Экономики','⚖️ Высшая Школа Права'],a:null,
+   r:['Гуманитарии красиво скажут речь и заберут кубок','Журналисты уже пишут репортаж о своей победе','Экономисты всё просчитали заранее','Юристы найдут пункт в регламенте'],why:'Правильного ответа нет: прогноз записан, проверим вечером.'},
+  {id:'u3',q:'Как пройти на арену?',o:['По Face ID, лучше заранее','Назвать пароль «Дружба — это чудо»','Подкупить охрану яблоками','Прискакать галопом'],a:0,
+   r:['Точно! Твоё лицо и есть билет','Звучит отлично, турникет не оценит','Яблоки оставь мне, сахарок','Галопом можно до входа, дальше лицо'] }
+ ],next),
+
+// 7 — Rarity: hard chess
+()=>quiz('rarity','Дорогая! Я слышала, ты преподаёшь шахматы. Как элегантно! Тогда вопросы будут… сложные. Не провали меня.',[
+  {id:'c1',q:'Можно ли сделать рокировку, если атакована ЛАДЬЯ?',o:['Да, можно','Нет, никогда','Только длинную','Только если сопернику скучно'],a:0,
+   r:['Восхитительно! Безупречно, как бриллиант','Это. Худшее. Что могло. Случиться. (Можно!)','Почти! Но можно и короткую','Ах, если бы правила были такими милыми'],
+   why:'Нельзя, если под шахом король или атаковано поле, через которое он проходит. Ладья под боем рокировке не мешает.'},
+  {id:'c2',q:'Сколько разных позиций может получиться после первого хода белых и ответа чёрных?',o:['20','64','400','1 000 000'],a:2,
+   r:['Это только у белых, дорогая','Это клетки, а не позиции','Именно! 20 × 20. Изящно','Драма! Но нет'],why:'У белых 20 вариантов первого хода, у чёрных 20 ответов: 20 × 20 = 400.'},
+  {id:'c3',q:'Сколько решений у задачи о восьми ферзях, которые не бьют друг друга?',o:['8','12','64','92'],a:3,
+   r:['Ферзей восемь, а решений больше','12 — это без учёта поворотов и отражений. Почти!','Это клетки, дорогая','Бриллиантовый ответ! 92'],why:'Всего 92 расстановки, из них 12 принципиально разных.'}
+ ],next),
+
+// 8 — Derpy: Tinkov
+()=>{ for(let k=0;k<12;k++)setTimeout(()=>drop('🧁'),k*120);
+  quiz('derpy','Привет! Я Дёрпи. Я открыла Маффин-банк, и мне сказали, что ты следишь за Тиньковым. Три вопроса! Я не знаю, что пошло не так, но они получились.',[
+  {id:'t1',q:'Каким спортом Олег Тиньков занимался профессионально в юности?',o:['Велоспортом','Шахматами','Альпинизмом','Полётами на маффинах'],a:0,
+   r:['Да! Педали, а не пешки','Это твой спорт, а не его','Это опять про тебя','Я пробовала. Не рекомендую'],why:'Поэтому позже у него и появилась своя велокоманда.'},
+  {id:'t2',q:'Как называлась его велокоманда с Контадором в составе?',o:['Tinkoff-Saxo','Team Ponyville','Маффин-Экспресс','Q-pop Riders'],a:0,
+   r:['Верно! Он купил её в конце 2013 года','Красиво, но нет','Это мой стартап','Ninety One на велосипедах? Хочу'] },
+  {id:'t3',q:'Как называется его книга «Я такой как…»?',o:['…все','…пони','…Кайрат','…ты'],a:0,
+   r:['«Я такой как все». Правильно!','Мы все немного пони','Это было бы громко','Мило, но нет']}
+ ],next); },
+
+// 9 — Summit gate: mountains
+()=>quiz('dash','Последний подъём! Ты же любишь горы? Докажи. Один вопрос и мы на вершине.',[
+  {id:'g1',q:'Какая гора — самая высокая точка Казахстана?',o:['Хан-Тенгри','Пик Талгар','Белуха','Шымбулак'],a:0,
+   r:['Хан-Тенгри! Мы на вершине! 🏔️','Высокий, но не самый','Это Алтай, и она не самая высокая','Это курорт. Отличный, но нет'],why:'Хан-Тенгри, Тянь-Шань: около 7010 м вместе с ледяной шапкой.',fx:()=>rainboom()}
+ ],()=>{party();next();}),
+
+// 10 — Summit postcard
+()=>{
+  const msg=`🏔️ Тропа на Посвящение пройдена!
+⏰ Встречаемся в ${S.time||'14:30'} у Дворца единоборств «Жекпе-Жек»
+🎉 Настроение: ${S.mood||'всё сразу'}
+📣 Громкость: ${S.volume}%
+🎒 Рюкзак: ${S.pack.length?S.pack.join(', '):'только хорошее настроение'}
+🏆 Кубок заберёт: ${(S.ans.u2||'—').replace(/^\S+\s/,'')}
+🧠 Квиз: ${S.score} из ${S.total}`;
+  const tg='https://t.me/wkejbd?text='+encodeURIComponent(msg);
+  view(`<div class="postcard">
+     <div class="hero-ponies" style="margin-bottom:-6px">${['twilight','pinkie','dash','flutter','rarity','aj'].map(k=>pony(P[k])).join('')}</div>
+     <h2 style="color:#fff">До встречи в</h2>
+     <div class="time">${S.time||'14:30'}</div>
+     <div class="place">у Дворца единоборств им. Ж. Ушкемпирова «Жекпе-Жек»</div>
+     <div class="meta">Посвящение в студенты MNU · 19 ноября<br>Вход 14:30–16:30, начало в 16:30, Face ID на входе<br>Ninety One и Қайрат Нұртас + битва четырёх школ</div>
+     <div class="chips"><span class="chip">🧠 ${S.score}/${S.total}</span><span class="chip">📣 ${S.volume}%</span><span class="chip">${S.mood||'🌀 Всё сразу'}</span></div>
+   </div>
+   <h2 class="center" style="text-align:center">Дружба — это чудо. А восхождение — тем более.</h2>
+   <p style="text-align:center">Последний шаг: отправь отчёт об экспедиции в Telegram. Текст уже скопирован, если чат откроется пустым, просто вставь его.</p>
+   <a class="btn tg" id="send" href="${tg}" target="_blank" rel="noopener">Отправить отчёт в Telegram</a>
+   <div class="reply" id="reply"></div>
+   <div class="msgbox" id="msg">${msg}</div>
+   <div class="actions"><button class="btn ghost" id="copy">Скопировать текст</button><button class="btn ghost" id="again">Пройти тропу снова</button></div>
+   <p style="text-align:center;font-size:13px">Получатель: Telegram @wkejbd</p>`);
+  const copy=async()=>{try{await navigator.clipboard.writeText(msg);$('reply').textContent='Скопировано! Открываю Telegram…';}catch(e){const r=document.createRange();r.selectNodeContents($('msg'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('reply').textContent='Текст выделен ниже: скопируй и отправь @wkejbd';}};
+  $('send').onclick=()=>{copy();party();};
+  $('copy').onclick=()=>copy().then(()=>{$('reply').textContent='Скопировано!';});
+  $('again').onclick=()=>{Object.assign(S,{pack:[],ans:{},score:0,total:0});go(0);};
+  setTimeout(()=>{rainboom();party();},250);
+}];
+
+/* =================== EFFECTS =================== */
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function burst(x,y,n){ if(RM)return; x=x||innerWidth/2; y=y||innerHeight/2;
+  const E=['✨','⭐','💜','🌈','🦄'];
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='spark';s.textContent=E[i%E.length];
+   s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--dx',(Math.random()*180-90)+'px');s.style.setProperty('--dy',(Math.random()*-150-20)+'px');
+   document.body.appendChild(s);setTimeout(()=>s.remove(),950);} }
+function drop(e){ if(RM)return; const d=document.createElement('span');d.className='fall';d.textContent=e;d.style.left=(Math.random()*92)+'vw';d.style.animationDuration=(2.2+Math.random()*1.8)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),4200);}
+function rainboom(){ if(RM)return; const r=document.createElement('div');r.className='rainboom';document.body.appendChild(r);setTimeout(()=>r.remove(),1200);}
+const fx=$('fx'),ctx=fx.getContext('2d');let parts=[],running=false;
+function sizeFx(){fx.width=innerWidth*devicePixelRatio;fx.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}
+sizeFx(); addEventListener('resize',sizeFx);
+function party(x,y){ if(RM)return; x=x??innerWidth/2; y=y??innerHeight*.35;
+  const C=['#ed438a','#7b5bd6','#3fcfa6','#ffc93c','#1e98d3','#f37033'];
+  for(let i=0;i<120;i++)parts.push({x,y,vx:(Math.random()-.5)*15,vy:Math.random()*-13-3,r:Math.random()*6+4,c:C[i%C.length],a:Math.random()*6,life:0});
+  if(!running){running=true;requestAnimationFrame(tick);} }
+function tick(){ ctx.clearRect(0,0,innerWidth,innerHeight);
+  parts.forEach(p=>{p.vy+=.33;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=.16;p.life++;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);ctx.restore();});
+  parts=parts.filter(p=>p.y<innerHeight+30&&p.life<240);
+  if(parts.length)requestAnimationFrame(tick);else{running=false;ctx.clearRect(0,0,innerWidth,innerHeight);} }
+
+/* Pinkie breaks the fourth wall */
+const LINES=['Я тут не подглядываю','Это я сломала четвёртую стену','Кексик хочешь?','Нажми меня, будет вечеринка','Кто съел мой кекс? А, я'];
+const peek=document.createElement('button');peek.className='peek';peek.setAttribute('aria-label','Пинки Пай: нажми для вечеринки');
+peek.innerHTML=`<span class="say" id="say"></span>${pony(P.pinkie)}`;document.body.appendChild(peek);
+function hidePeek(){peek.style.transform='translateX(140%)';}
+peek.style.right='calc(-10px + env(safe-area-inset-right,0px))';peek.style.top='calc(38% + env(safe-area-inset-top,0px))';hidePeek();
+let li=0;function showPeek(){ if(RM)return; $('say').textContent=LINES[li++%LINES.length];$('say').style.right='20px';peek.style.transform='translateX(30%) rotate(-12deg)';setTimeout(hidePeek,3500);}
+peek.onclick=()=>{party(innerWidth-60,innerHeight*.7);hidePeek();};
+setTimeout(showPeek,6000);setInterval(showPeek,22000);
+
+/* clouds */
+for(let i=0;i<4;i++){const c=document.createElement('div');c.className='cloud';c.textContent='☁️';c.style.top=(4+i*11)+'%';c.style.fontSize=(34+Math.random()*30)+'px';c.style.animationDuration=(40+Math.random()*30)+'s';c.style.animationDelay=(-Math.random()*60)+'s';document.body.prepend(c);}
+
+go(0);
+</script>
+</body>
+</html>
